@@ -37,7 +37,7 @@ export default function SpaceMap({ floor, dayBookings, onSelect, selectedId }: P
     <div ref={containerRef} className="relative" onMouseMove={onMove}>
       <svg
         viewBox={`0 0 ${floor.map.width} ${floor.map.height}`}
-        className="h-auto w-full rounded-2xl border border-slate-200"
+        className="h-auto w-full rounded-2xl border border-slate-200 shadow-sm"
         style={{ background: floor.map.background }}
       >
         {/* Zone backdrops (team neighbourhoods) */}

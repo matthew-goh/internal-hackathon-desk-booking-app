@@ -33,7 +33,7 @@ export default function DayRoster({
   const checkedIn = rows.filter((b) => b.status === "checked-in").length;
 
   return (
-    <div className="flex w-72 shrink-0 flex-col rounded-2xl border border-slate-200 bg-white">
+    <div className="flex w-72 shrink-0 flex-col rounded-2xl border border-slate-200 bg-white shadow-sm">
       <div className="border-b border-slate-100 p-4">
         <div className="text-sm font-semibold">Who's in today</div>
         <div className="text-xs text-slate-500">

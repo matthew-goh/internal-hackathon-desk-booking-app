@@ -36,7 +36,13 @@ export default function BookingPanel({
   const style = STATUS_STYLE[state];
 
   return (
-    <div className="fixed right-0 top-0 z-40 flex h-full w-80 flex-col border-l border-slate-200 bg-white shadow-2xl">
+    <>
+      <div
+        className="animate-fade-in fixed inset-0 z-30 bg-slate-900/20"
+        onClick={onClose}
+        aria-hidden
+      />
+      <div className="animate-slide-in-right fixed right-0 top-0 z-40 flex h-full w-80 flex-col border-l border-slate-200 bg-white shadow-2xl">
       {/* Header */}
       <div className="flex items-start justify-between border-b border-slate-200 p-4">
         <div>
@@ -93,7 +99,8 @@ export default function BookingPanel({
           </div>
         )}
       </div>
-    </div>
+      </div>
+    </>
   );
 }
 

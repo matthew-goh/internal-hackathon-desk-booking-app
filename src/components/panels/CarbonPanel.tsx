@@ -82,7 +82,7 @@ export default function CarbonPanel() {
 
       {/* Personal contribution */}
       {mine && (
-        <div className="mt-4 rounded-xl border border-slate-200 bg-white p-4">
+        <div className="mt-4 rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
           <div className="flex items-center gap-3">
             <img src={me.avatar} alt="" className="h-11 w-11 rounded-full bg-slate-100" />
             <div className="flex-1">
@@ -105,7 +105,7 @@ export default function CarbonPanel() {
       )}
 
       {/* Per-team breakdown */}
-      <div className="mt-4 rounded-xl border border-slate-200 bg-white p-4">
+      <div className="mt-4 rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
         <div className="text-sm font-medium text-slate-700">Saved by team this week</div>
         <div className="mt-3 space-y-2">
           {week.byTeam.map(({ teamId, savedKg }) => {

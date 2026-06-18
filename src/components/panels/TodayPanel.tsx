@@ -113,7 +113,7 @@ export default function TodayPanel() {
       </div>
 
       {/* Team breakdown */}
-      <div className="mt-6 rounded-xl border border-slate-200 bg-white p-4">
+      <div className="mt-6 rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
         <div className="text-sm font-medium text-slate-700">Who's making it busy</div>
         <div className="mt-3 space-y-2">
           {ranked.map(([teamId, n]) => {
@@ -146,7 +146,7 @@ export default function TodayPanel() {
 
 function Stat({ label, value }: { label: string; value: number }) {
   return (
-    <div className="rounded-xl border border-slate-200 bg-white p-4">
+    <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
       <div className="text-2xl font-semibold">{value}</div>
       <div className="text-xs text-slate-500">{label}</div>
     </div>
