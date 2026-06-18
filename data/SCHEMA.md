@@ -7,7 +7,7 @@ All fake data lives in `/data` as plain JSON so it can be imported by any stack.
 | `config.json`   | App-wide settings: access tiers, co-ownership rule, carbon factors |
 | `teams.json`    | The 8 teams, each with a brand colour and home zone |
 | `users.json`    | 36 people — identity, role, streaks, commute profile |
-| `office.json`   | Two floors (Main + the Flat), their map layout and every space |
+| `office.json`   | Two floors (Main + the Apartment), their map layout and every space |
 | `bookings.json` | ~70 bookings across one week, with realistic daily patterns |
 
 ---
@@ -36,7 +36,7 @@ All fake data lives in `/data` as plain JSON so it can be imported by any stack.
 ```
 
 ### Access tiers (see `config.json` → `accessRights`)
-| Tier | Book for others | See/book the Flat | Manage anyone's booking |
+| Tier | Book for others | See/book the Apartment | Manage anyone's booking |
 |------|:---:|:---:|:---:|
 | `user`    | ✗ | ✗ | ✗ |
 | `manager` | ✓ | ✗ | ✗ |
@@ -45,7 +45,7 @@ All fake data lives in `/data` as plain JSON so it can be imported by any stack.
 
 > **Co-ownership is separate from tiers.** Any user can assign a desk they booked to
 > another person; both land in the booking's `owners[]` and can manage it. Tiers only
-> gate booking-on-behalf at scale, Flat access, and the admin override.
+> gate booking-on-behalf at scale, Apartment access (`canAccessFlat`), and the admin override.
 
 ---
 
@@ -70,14 +70,17 @@ absolute pixels on that canvas, so the map renders straight from the data.
 | `desk`    | ✓ | `zone`, `amenities[]` |
 | `room`    | ✓ | `seats`, `width`/`height`, `amenities[]` |
 | `pod`     | ✓ | `seats: 1` |
-| `lounge`  | ✗ (`bookable:false` on Main, ✓ in the Flat) | `seats` |
+| `lounge`  | ✗ (`bookable:false`) | `seats` |
 | `kitchen` | ✗ | — shown on the map for orientation only |
 
+> **IDs vs labels:** desk `id`s stay stable (`D01`–`D32`) so bookings never break;
+> their `label` is the real office desk number (`"1"`–`"32"`). Rooms use real names.
+
 ```jsonc
-{ "id": "D01", "type": "desk", "label": "D01", "zone": "A",
+{ "id": "D01", "type": "desk", "label": "1", "zone": "A",
   "x": 120, "y": 220, "amenities": ["dual-monitor", "charging", "window"] }
 
-{ "id": "R-boardroom", "type": "room", "label": "Boardroom", "seats": 12,
+{ "id": "R-gerardus", "type": "room", "label": "Gerardus", "seats": 12,
   "x": 460, "y": 40, "width": 280, "height": 120,
   "privileged": true, "allowedRoles": ["manager","csuite","admin"],   // not everyone can book it
   "amenities": ["screen","whiteboard","video-conf","phone"] }
@@ -85,18 +88,21 @@ absolute pixels on that canvas, so the map renders straight from the data.
 
 - **`amenities` vocabulary:** `monitor`, `dual-monitor`, `charging`, `standing-desk`,
   `window`, `screen`, `whiteboard`, `video-conf`, `phone`.
-- **Privileged spaces** carry `privileged:true` + `allowedRoles[]`. The whole **Flat**
-  floor is `restricted:true` + `allowedRoles:["csuite","admin"]` — hide it entirely from
-  everyone else.
+- **Privileged spaces** carry `privileged:true` + `allowedRoles[]`. The whole
+  **Apartment** floor is `restricted:true` + `allowedRoles:["csuite","admin"]` — hide it
+  entirely from everyone else.
 
 ### The map (Main Floor)
+Real office names from the Skedda 3rd-floor plan:
 ```
- [ Brainstorm ]        [  Boardroom 🔒 ]        [  Huddle  ]
- ── North Wing (Eng) ──  Kitchen | Focus ──  East Wing (Prod/Design) ──
-                         [Pod1][Pod2]
- ── West Wing (Fin/HR) ──   Lounge    ──  South Wing (Sales/Mktg) ──
+ [ Globe ]            [  Gerardus 🔒 ]          [  Atlas  ]
+ ── North Wing (Eng) ──  Kitchen | Meridian ──  East Wing (Prod/Design) ──
+                         [Booth 1][Booth 2]
+ ── West Wing (Fin/HR) ──   Salad lounge   ──  South Wing (Sales/Mktg) ──
 ```
-32 desks (D01–D32) in four 8-desk wings, 4 rooms, 2 pods, lounge, kitchen.
+32 desks (ids `D01`–`D32`, labels `1`–`32`) in four 8-desk wings; 4 rooms (Globe,
+Gerardus, Atlas, Meridian), 2 phone booths (pods), the Salad lounge, kitchen.
+The **Apartment** is a separate restricted floor with two rooms: `AR1` / `AR2`.
 
 ---
 
@@ -141,8 +147,9 @@ Any owner may move a booking to `cancelled` before it starts.
   Thu `bk-401–404` — Nina books 4 Product desks and assigns each to a teammate.
   `bk-204` is a **no-show on a co-owned desk** — the co-owner could have released it.
 - **Ghost bookings:** `bk-104`, `bk-210`, `bk-306`, `bk-316` end as `no-show`.
-- **Privileged room:** `bk-331`, `bk-416` book the Boardroom (manager+).
-- **The Flat:** `bk-418`, `bk-419` — only visible to C-suite/admin.
+- **Privileged room:** `bk-331`, `bk-416` book **Gerardus** (manager+).
+- **The Apartment:** `bk-418` (Apartment Room 1), `bk-419` (Apartment Room 2) — only
+  visible to C-suite/admin.
 
 ---
 
