@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useApp } from "../../store";
+import { useApp, getUser, floorsVisibleTo, bookingsOnDate } from "../../store";
 import SpaceMap from "../SpaceMap";
 import { STATUS_STYLE, ORDERED_STATES, bookingsBySpace } from "../../lib/status";
 
@@ -9,15 +9,18 @@ import { STATUS_STYLE, ORDERED_STATES, bookingsBySpace } from "../../lib/status"
  * the selected date and reveals the occupant on hover.
  */
 export default function FloorPanel() {
-  const floors = useApp((s) => s.visibleFloors());
+  const currentUserId = useApp((s) => s.currentUserId);
   const selectedDate = useApp((s) => s.selectedDate);
-  const bookingsOn = useApp((s) => s.bookingsOn);
+  const bookings = useApp((s) => s.bookings);
 
+  const floors = floorsVisibleTo(getUser(currentUserId));
   const [floorId, setFloorId] = useState("main");
   const floor = floors.find((f) => f.id === floorId) ?? floors[0];
 
   const floorSpaceIds = new Set(floor.spaces.map((s) => s.id));
-  const dayBookings = bookingsOn(selectedDate).filter((b) => floorSpaceIds.has(b.spaceId));
+  const dayBookings = bookingsOnDate(bookings, selectedDate).filter((b) =>
+    floorSpaceIds.has(b.spaceId),
+  );
   const bySpace = bookingsBySpace(dayBookings);
 
   const desks = floor.spaces.filter((s) => s.type === "desk");

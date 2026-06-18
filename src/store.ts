@@ -14,20 +14,9 @@ interface AppState {
   setSelectedDate: (date: string) => void;
   setCurrentUserId: (id: string) => void;
   setView: (view: View) => void;
-
-  // ---- derived selectors ----
-  currentUser: () => User;
-  bookingsOn: (date: string) => Booking[];
-  /** Floors the current user is allowed to see (the Flat is gated). */
-  visibleFloors: () => Floor[];
 }
 
-function canSeeFloor(floor: Floor, user: User): boolean {
-  if (!floor.restricted) return true;
-  return (floor.allowedRoles ?? []).includes(user.accessRights);
-}
-
-export const useApp = create<AppState>((set, get) => ({
+export const useApp = create<AppState>((set) => ({
   bookings: seedBookings,
   selectedDate: "2026-06-18",
   currentUserId: "u-04", // Sofia Reyes (admin) — all floors visible by default
@@ -36,12 +25,28 @@ export const useApp = create<AppState>((set, get) => ({
   setSelectedDate: (selectedDate) => set({ selectedDate }),
   setCurrentUserId: (currentUserId) => set({ currentUserId }),
   setView: (view) => set({ view }),
-
-  currentUser: () => usersById[get().currentUserId],
-  bookingsOn: (date) =>
-    get().bookings.filter((b) => b.date === date && b.status !== "cancelled"),
-  visibleFloors: () => {
-    const user = get().currentUser();
-    return office.floors.filter((f) => canSeeFloor(f, user));
-  },
 }));
+
+/*
+ * Pure selectors. Components subscribe to RAW state with useApp (primitives /
+ * the stable bookings array) and call these helpers in the render body.
+ * They must NOT be called inside a useApp selector — they return fresh
+ * arrays each call, which would break useSyncExternalStore's snapshot
+ * equality and loop forever.
+ */
+
+export const getUser = (id: string): User => usersById[id];
+
+export function bookingsOnDate(bookings: Booking[], date: string): Booking[] {
+  return bookings.filter((b) => b.date === date && b.status !== "cancelled");
+}
+
+function canSeeFloor(floor: Floor, user: User): boolean {
+  if (!floor.restricted) return true;
+  return (floor.allowedRoles ?? []).includes(user.accessRights);
+}
+
+/** Floors the user is allowed to see (the Apartment is gated). */
+export function floorsVisibleTo(user: User): Floor[] {
+  return office.floors.filter((f) => canSeeFloor(f, user));
+}

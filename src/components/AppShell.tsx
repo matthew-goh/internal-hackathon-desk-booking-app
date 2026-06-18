@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { useApp, type View } from "../store";
+import { useApp, getUser, type View } from "../store";
 import { users } from "../data";
 import { config } from "../data";
 
@@ -22,7 +22,7 @@ const WEEK = [
 export default function AppShell({ children }: { children: ReactNode }) {
   const { view, setView, selectedDate, setSelectedDate, currentUserId, setCurrentUserId } =
     useApp();
-  const me = useApp((s) => s.currentUser());
+  const me = getUser(currentUserId);
 
   return (
     <div className="flex h-full">

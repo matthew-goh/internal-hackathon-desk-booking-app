@@ -134,9 +134,12 @@ function DeskIcon({ space, state, booking, onEnter, onLeave }: IconProps) {
             height={28}
             clipPath={`url(#${clipId})`}
           />
-          <text x={cx} y={size - 8} textAnchor="middle" fontSize={11} className="fill-slate-500">
-            {space.label}
-          </text>
+          {/* Desks show their number; pods would overflow, so rely on the hover card */}
+          {!isPod && (
+            <text x={cx} y={size - 8} textAnchor="middle" fontSize={11} className="fill-slate-500">
+              {space.label}
+            </text>
+          )}
         </>
       ) : isPod ? (
         <text x={cx} y={cx + 5} textAnchor="middle" fontSize={20}>

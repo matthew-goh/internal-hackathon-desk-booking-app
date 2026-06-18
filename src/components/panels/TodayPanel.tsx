@@ -1,4 +1,4 @@
-import { useApp } from "../../store";
+import { useApp, bookingsOnDate } from "../../store";
 import { usersById, teamsById } from "../../data";
 
 /**
@@ -8,7 +8,8 @@ import { usersById, teamsById } from "../../data";
  */
 export default function TodayPanel() {
   const selectedDate = useApp((s) => s.selectedDate);
-  const dayBookings = useApp((s) => s.bookingsOn(selectedDate));
+  const bookings = useApp((s) => s.bookings);
+  const dayBookings = bookingsOnDate(bookings, selectedDate);
 
   const deskBookings = dayBookings.filter((b) => b.spaceType === "desk");
 

@@ -1,4 +1,4 @@
-import { useApp } from "../../store";
+import { useApp, getUser } from "../../store";
 import { teamsById, config } from "../../data";
 
 /**
@@ -7,7 +7,7 @@ import { teamsById, config } from "../../data";
  * personal carbon figure get their real treatment in Phase 4.
  */
 export default function ProfilePanel() {
-  const me = useApp((s) => s.currentUser());
+  const me = getUser(useApp((s) => s.currentUserId));
   const team = teamsById[me.team];
   const role = config.accessRights[me.accessRights];
   const { streak, commute } = me;
