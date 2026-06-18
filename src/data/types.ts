@@ -54,7 +54,7 @@ export interface User {
 
 // ---- Office ----
 
-export type SpaceType = "desk" | "room" | "pod" | "lounge" | "kitchen";
+export type SpaceType = "desk" | "room" | "pod" | "lounge" | "kitchen" | "feature";
 
 export type Amenity =
   | "monitor"
@@ -71,6 +71,8 @@ export interface Space {
   id: string;
   type: SpaceType;
   label: string;
+  /** Optional emoji/glyph drawn on non-bookable feature markers. */
+  icon?: string;
   x: number;
   y: number;
   /** Rooms, lounges, pods and kitchens carry width/height; desks are point icons. */
@@ -100,6 +102,8 @@ export interface FloorMap {
   width: number;
   height: number;
   background: string;
+  /** Optional polygon outline [[x,y],…] for an irregular floor shape. */
+  outline?: [number, number][];
 }
 
 export interface Floor {

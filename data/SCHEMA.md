@@ -57,9 +57,12 @@ absolute pixels on that canvas, so the map renders straight from the data.
 ```jsonc
 {
   "id": "main",
-  "restricted": false,                   // the "flat" floor is restricted: csuite/admin only
-  "map": { "width": 1200, "height": 760, "background": "#F8FAFC" },
-  "zones": [ { "id": "A", "label": "North Wing", "team": "engineering", "x":100,"y":195,"width":320,"height":185 } ],
+  "restricted": false,                   // the Apartment floor is restricted: csuite/admin only
+  "map": {
+    "width": 1150, "height": 840, "background": "#EEF2F7",
+    "outline": [[405,45],[775,48], /* … */ [55,225],[405,215]]  // irregular floor polygon
+  },
+  "zones": [],                           // no team zones; geometry traces the real 3rd-floor plan
   "spaces": [ /* see below */ ]
 }
 ```
@@ -67,23 +70,29 @@ absolute pixels on that canvas, so the map renders straight from the data.
 ### Space types
 | `type` | Bookable | Extra fields |
 |--------|:---:|--------------|
-| `desk`    | ✓ | `zone`, `amenities[]` |
+| `desk`    | ✓ | `amenities[]` |
 | `room`    | ✓ | `seats`, `width`/`height`, `amenities[]` |
-| `pod`     | ✓ | `seats: 1` |
-| `lounge`  | ✗ (`bookable:false`) | `seats` |
-| `kitchen` | ✗ | — shown on the map for orientation only |
+| `pod`     | ✓ | `seats: 1` (the two phone booths) |
+| `lounge`  | ✗ (`bookable:false`) | `seats` (Salad, Guest Lounge) |
+| `kitchen` | ✗ | shown for orientation only |
+| `feature` | ✗ | `icon` — non-bookable markers (Reception, Lockers, Lift…) |
 
 > **IDs vs labels:** desk `id`s stay stable (`D01`–`D32`) so bookings never break;
-> their `label` is the real office desk number (`"1"`–`"32"`). Rooms use real names.
+> their `label` is the real desk number on the plan (`"1"`–`"32"`), which is **not**
+> sequential with the id — e.g. `D01`'s label is `"19"` because it sits in the top pod.
+> Rooms use their real names.
 
 ```jsonc
-{ "id": "D01", "type": "desk", "label": "1", "zone": "A",
-  "x": 120, "y": 220, "amenities": ["dual-monitor", "charging", "window"] }
+{ "id": "D01", "type": "desk", "label": "19",
+  "x": 430, "y": 250, "amenities": ["dual-monitor", "charging", "window"] }
 
 { "id": "R-gerardus", "type": "room", "label": "Gerardus", "seats": 12,
-  "x": 460, "y": 40, "width": 280, "height": 120,
+  "x": 415, "y": 55, "width": 180, "height": 125,
   "privileged": true, "allowedRoles": ["manager","csuite","admin"],   // not everyone can book it
   "amenities": ["screen","whiteboard","video-conf","phone"] }
+
+{ "id": "LOCKERS", "type": "feature", "label": "Lockers", "icon": "🔒",
+  "x": 905, "y": 560, "width": 36, "height": 180, "bookable": false }
 ```
 
 - **`amenities` vocabulary:** `monitor`, `dual-monitor`, `charging`, `standing-desk`,
@@ -91,17 +100,21 @@ absolute pixels on that canvas, so the map renders straight from the data.
 - **Privileged spaces** carry `privileged:true` + `allowedRoles[]`. The whole
   **Apartment** floor is `restricted:true` + `allowedRoles:["csuite","admin"]` — hide it
   entirely from everyone else.
+- **`map.outline`** (optional) is a polygon `[[x,y],…]` drawn as the floor shell;
+  Main traces the real 3rd-floor plan, the Apartment is a house silhouette.
 
-### The map (Main Floor)
-Real office names from the Skedda 3rd-floor plan:
+### The map (3rd Floor)
+Traced from the real Skedda 3rd-floor plan. Five desk pods (labels match the plan):
 ```
- [ Globe ]            [  Gerardus 🔒 ]          [  Atlas  ]
- ── North Wing (Eng) ──  Kitchen | Meridian ──  East Wing (Prod/Design) ──
-                         [Booth 1][Booth 2]
- ── West Wing (Fin/HR) ──   Salad lounge   ──  South Wing (Sales/Mktg) ──
+        [ Gerardus 🔒 ] [ Globe ]   [Guest Lounge] [Reflection]
+ [ Salad ]   Pod 19–26   Pod 27–32              [ Meridian ]
+                              [ Atlas ]   [Reception]      [Fire Exit]
+ [Stationery] Pod 13–18  Pod 7–12  Pod 1–6  [Lockers]      [Lift][Toilets]
+ [Booth 1][Booth 2]                                        [ Kitchen ]
 ```
-32 desks (ids `D01`–`D32`, labels `1`–`32`) in four 8-desk wings; 4 rooms (Globe,
-Gerardus, Atlas, Meridian), 2 phone booths (pods), the Salad lounge, kitchen.
+32 desks in 5 pods (one of 8 + four of 6); rooms Gerardus, Globe, Atlas, Meridian;
+the Salad + Guest lounges; 2 phone booths; and non-bookable features (reception,
+lockers, stationery, kitchen, fire exit, lift, toilets).
 The **Apartment** is a separate restricted floor with two rooms: `AR1` / `AR2`.
 
 ---

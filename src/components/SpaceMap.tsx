@@ -3,7 +3,7 @@ import type { Booking, Floor, Space } from "../data/types";
 import { usersById, teamsById } from "../data";
 import { STATUS_STYLE, bookingsBySpace, type SpaceState } from "../lib/status";
 
-const DESK = 58;
+const DESK = 52;
 
 interface Props {
   floor: Floor;
@@ -35,11 +35,28 @@ export default function SpaceMap({ floor, dayBookings, onSelect, selectedId }: P
 
   return (
     <div ref={containerRef} className="relative" onMouseMove={onMove}>
-      <svg
-        viewBox={`0 0 ${floor.map.width} ${floor.map.height}`}
-        className="h-auto w-full rounded-2xl border border-slate-200 shadow-sm"
-        style={{ background: floor.map.background }}
-      >
+      <svg viewBox={`0 0 ${floor.map.width} ${floor.map.height}`} className="h-auto w-full">
+        {/* Floor shell — real polygon outline, or a rounded rectangle fallback */}
+        {floor.map.outline ? (
+          <polygon
+            points={floor.map.outline.map(([x, y]) => `${x},${y}`).join(" ")}
+            fill={floor.map.background}
+            stroke="#94a3b8"
+            strokeWidth={3}
+            strokeLinejoin="round"
+          />
+        ) : (
+          <rect
+            x={0}
+            y={0}
+            width={floor.map.width}
+            height={floor.map.height}
+            rx={16}
+            fill={floor.map.background}
+            stroke="#cbd5e1"
+          />
+        )}
+
         {/* Zone backdrops (team neighbourhoods) */}
         {floor.zones.map((z) => (
           <g key={z.id}>
@@ -173,12 +190,27 @@ function DeskIcon({ space, state, booking, selected, onEnter, onLeave, onClick }
 function RoomBox({ space, state, booking, selected, onEnter, onLeave, onClick }: IconProps) {
   const w = space.width ?? 160;
   const h = space.height ?? 100;
-  const interactive = space.bookable !== false && space.type !== "kitchen";
+  const isFeature = space.type === "feature" || space.type === "kitchen";
+  const interactive = !isFeature && space.bookable !== false;
   const style = STATUS_STYLE[state];
   const occupant = booking ? usersById[booking.assignedTo] : undefined;
 
-  const fill = interactive ? style.fill : "#f1f5f9";
-  const stroke = selected ? "#4f46e5" : interactive ? style.stroke : "#e2e8f0";
+  // Bookable rooms read green (like the real plan); features/lounges stay neutral.
+  let fill: string;
+  let stroke: string;
+  if (isFeature) {
+    fill = "#f1f5f9";
+    stroke = "#e2e8f0";
+  } else if (interactive) {
+    fill = booking ? style.fill : "#ecfdf5";
+    stroke = selected ? "#4f46e5" : booking ? style.stroke : "#86efac";
+  } else {
+    // non-bookable lounge (Salad, Guest Lounge)
+    fill = "#f0fdf4";
+    stroke = "#bbf7d0";
+  }
+
+  const labelFits = w >= 64;
 
   return (
     <g
@@ -188,20 +220,45 @@ function RoomBox({ space, state, booking, selected, onEnter, onLeave, onClick }:
       onClick={interactive ? onClick : undefined}
       className={interactive ? "cursor-pointer" : undefined}
     >
-      <rect width={w} height={h} rx={12} fill={fill} stroke={stroke} strokeWidth={selected ? 4 : 2} />
-      <text x={w / 2} y={h / 2 - 4} textAnchor="middle" fontSize={15} fontWeight={600} className="fill-slate-600">
-        {space.type === "kitchen" ? "🍴 " : ""}
-        {space.label}
-      </text>
-      {space.seats != null && (
-        <text x={w / 2} y={h / 2 + 16} textAnchor="middle" fontSize={12} className="fill-slate-400">
-          {space.seats} seats
-        </text>
-      )}
-      {occupant && (
-        <text x={w / 2} y={h - 12} textAnchor="middle" fontSize={12} className="fill-slate-500">
-          {style.label} · {occupant.name.split(" ")[0]}
-        </text>
+      <rect
+        width={w}
+        height={h}
+        rx={12}
+        fill={fill}
+        stroke={stroke}
+        strokeWidth={selected ? 4 : 2}
+        strokeDasharray={isFeature ? "4 3" : undefined}
+      />
+
+      {isFeature ? (
+        <>
+          {space.icon && (
+            <text x={w / 2} y={labelFits ? h / 2 - 4 : h / 2 + 6} textAnchor="middle" fontSize={18}>
+              {space.icon}
+            </text>
+          )}
+          {labelFits && (
+            <text x={w / 2} y={h / 2 + 16} textAnchor="middle" fontSize={11} className="fill-slate-400">
+              {space.label}
+            </text>
+          )}
+        </>
+      ) : (
+        <>
+          <text x={w / 2} y={h / 2 - 4} textAnchor="middle" fontSize={15} fontWeight={600} className="fill-slate-600">
+            {space.label}
+          </text>
+          {space.seats != null && (
+            <text x={w / 2} y={h / 2 + 16} textAnchor="middle" fontSize={12} className="fill-slate-400">
+              {space.seats} seats
+            </text>
+          )}
+          {occupant && (
+            <text x={w / 2} y={h - 12} textAnchor="middle" fontSize={12} className="fill-slate-500">
+              {style.label} · {occupant.name.split(" ")[0]}
+            </text>
+          )}
+        </>
       )}
     </g>
   );
