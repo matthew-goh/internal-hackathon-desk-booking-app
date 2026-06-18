@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useApp, getUser, floorsVisibleTo, bookingsOnDate } from "../../store";
 import SpaceMap from "../SpaceMap";
+import BookingPanel from "../BookingPanel";
 import { STATUS_STYLE, ORDERED_STATES, bookingsBySpace } from "../../lib/status";
 
 /**
@@ -16,6 +17,9 @@ export default function FloorPanel() {
   const floors = floorsVisibleTo(getUser(currentUserId));
   const [floorId, setFloorId] = useState("main");
   const floor = floors.find((f) => f.id === floorId) ?? floors[0];
+
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const selectedSpace = floor.spaces.find((s) => s.id === selectedId) ?? null;
 
   const floorSpaceIds = new Set(floor.spaces.map((s) => s.id));
   const dayBookings = bookingsOnDate(bookings, selectedDate).filter((b) =>
@@ -34,7 +38,10 @@ export default function FloorPanel() {
           {floors.map((f) => (
             <button
               key={f.id}
-              onClick={() => setFloorId(f.id)}
+              onClick={() => {
+                setFloorId(f.id);
+                setSelectedId(null);
+              }}
               className={`rounded-lg px-3 py-1.5 text-sm font-medium transition ${
                 floor.id === f.id
                   ? "bg-slate-900 text-white"
@@ -54,7 +61,12 @@ export default function FloorPanel() {
         )}
       </div>
 
-      <SpaceMap floor={floor} dayBookings={dayBookings} />
+      <SpaceMap
+        floor={floor}
+        dayBookings={dayBookings}
+        selectedId={selectedId}
+        onSelect={(s) => setSelectedId(s.id)}
+      />
 
       {/* Legend */}
       <div className="mt-3 flex flex-wrap items-center gap-4 text-xs text-slate-500">
@@ -70,8 +82,17 @@ export default function FloorPanel() {
             {STATUS_STYLE[state].label}
           </div>
         ))}
-        <span className="ml-auto text-slate-400">Hover a space for details</span>
+        <span className="ml-auto text-slate-400">Hover for details · click to book</span>
       </div>
+
+      {selectedSpace && (
+        <BookingPanel
+          key={selectedSpace.id}
+          space={selectedSpace}
+          booking={bySpace[selectedSpace.id]}
+          onClose={() => setSelectedId(null)}
+        />
+      )}
     </div>
   );
 }

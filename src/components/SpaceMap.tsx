@@ -8,14 +8,16 @@ const DESK = 58;
 interface Props {
   floor: Floor;
   dayBookings: Booking[];
+  onSelect: (space: Space) => void;
+  selectedId?: string | null;
 }
 
 /**
  * Data-driven SVG plan of a floor. Every space is positioned from office.json,
- * coloured by its booking status for the selected day, and shows an occupant
- * card on hover. Read-only in Phase 1 — booking actions arrive in Phase 2.
+ * coloured by its booking status for the selected day, shows an occupant card
+ * on hover, and opens the booking panel on click.
  */
-export default function SpaceMap({ floor, dayBookings }: Props) {
+export default function SpaceMap({ floor, dayBookings, onSelect, selectedId }: Props) {
   const bySpace = bookingsBySpace(dayBookings);
   const containerRef = useRef<HTMLDivElement>(null);
   const [hovered, setHovered] = useState<string | null>(null);
@@ -66,8 +68,10 @@ export default function SpaceMap({ floor, dayBookings }: Props) {
                 space={s}
                 state={state}
                 booking={booking}
+                selected={selectedId === s.id}
                 onEnter={() => setHovered(s.id)}
                 onLeave={() => setHovered(null)}
+                onClick={() => onSelect(s)}
               />
             );
           return (
@@ -76,8 +80,10 @@ export default function SpaceMap({ floor, dayBookings }: Props) {
               space={s}
               state={state}
               booking={booking}
+              selected={selectedId === s.id}
               onEnter={() => setHovered(s.id)}
               onLeave={() => setHovered(null)}
+              onClick={() => onSelect(s)}
             />
           );
         })}
@@ -94,11 +100,13 @@ interface IconProps {
   space: Space;
   state: SpaceState;
   booking?: Booking;
+  selected?: boolean;
   onEnter: () => void;
   onLeave: () => void;
+  onClick: () => void;
 }
 
-function DeskIcon({ space, state, booking, onEnter, onLeave }: IconProps) {
+function DeskIcon({ space, state, booking, selected, onEnter, onLeave, onClick }: IconProps) {
   const size = space.width ?? DESK;
   const cx = size / 2;
   const style = STATUS_STYLE[state];
@@ -111,6 +119,7 @@ function DeskIcon({ space, state, booking, onEnter, onLeave }: IconProps) {
       transform={`translate(${space.x}, ${space.y})`}
       onMouseEnter={onEnter}
       onMouseLeave={onLeave}
+      onClick={onClick}
       className="cursor-pointer"
     >
       <rect
@@ -118,8 +127,8 @@ function DeskIcon({ space, state, booking, onEnter, onLeave }: IconProps) {
         height={size}
         rx={10}
         fill={style.fill}
-        stroke={style.stroke}
-        strokeWidth={2}
+        stroke={selected ? "#4f46e5" : style.stroke}
+        strokeWidth={selected ? 4 : 2}
       />
       {occupant ? (
         <>
@@ -161,7 +170,7 @@ function DeskIcon({ space, state, booking, onEnter, onLeave }: IconProps) {
   );
 }
 
-function RoomBox({ space, state, booking, onEnter, onLeave }: IconProps) {
+function RoomBox({ space, state, booking, selected, onEnter, onLeave, onClick }: IconProps) {
   const w = space.width ?? 160;
   const h = space.height ?? 100;
   const interactive = space.bookable !== false && space.type !== "kitchen";
@@ -169,16 +178,17 @@ function RoomBox({ space, state, booking, onEnter, onLeave }: IconProps) {
   const occupant = booking ? usersById[booking.assignedTo] : undefined;
 
   const fill = interactive ? style.fill : "#f1f5f9";
-  const stroke = interactive ? style.stroke : "#e2e8f0";
+  const stroke = selected ? "#4f46e5" : interactive ? style.stroke : "#e2e8f0";
 
   return (
     <g
       transform={`translate(${space.x}, ${space.y})`}
       onMouseEnter={interactive ? onEnter : undefined}
       onMouseLeave={interactive ? onLeave : undefined}
+      onClick={interactive ? onClick : undefined}
       className={interactive ? "cursor-pointer" : undefined}
     >
-      <rect width={w} height={h} rx={12} fill={fill} stroke={stroke} strokeWidth={2} />
+      <rect width={w} height={h} rx={12} fill={fill} stroke={stroke} strokeWidth={selected ? 4 : 2} />
       <text x={w / 2} y={h / 2 - 4} textAnchor="middle" fontSize={15} fontWeight={600} className="fill-slate-600">
         {space.type === "kitchen" ? "🍴 " : ""}
         {space.label}
