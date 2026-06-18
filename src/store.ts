@@ -16,10 +16,13 @@ interface AppState {
   selectedDate: string;
   currentUserId: string;
   view: View;
+  /** Admin-pinned "why is it busy" note, keyed by date. */
+  dayNotes: Record<string, string>;
 
   setSelectedDate: (date: string) => void;
   setCurrentUserId: (id: string) => void;
   setView: (view: View) => void;
+  setDayNote: (date: string, note: string) => void;
 
   // ---- booking actions (Phase 2) ----
   book: (input: BookInput) => void;
@@ -37,10 +40,18 @@ export const useApp = create<AppState>((set) => ({
   selectedDate: "2026-06-18",
   currentUserId: "u-04", // Sofia Reyes (admin) — all floors visible by default
   view: "floor",
+  dayNotes: {},
 
   setSelectedDate: (selectedDate) => set({ selectedDate }),
   setCurrentUserId: (currentUserId) => set({ currentUserId }),
   setView: (view) => set({ view }),
+  setDayNote: (date, note) =>
+    set((s) => {
+      const dayNotes = { ...s.dayNotes };
+      if (note.trim()) dayNotes[date] = note.trim();
+      else delete dayNotes[date];
+      return { dayNotes };
+    }),
 
   book: ({ spaceId, spaceType, assignedTo }) =>
     set((s) => {

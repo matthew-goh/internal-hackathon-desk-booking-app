@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useApp, getUser, bookingsOnDate } from "../../store";
-import { teamsById, office } from "../../data";
+import { teamsById, office, config } from "../../data";
 
 const SPACE_LABEL: Record<string, string> = Object.fromEntries(
   office.floors.flatMap((f) => f.spaces).map((s) => [s.id, s.label]),
@@ -15,7 +15,16 @@ export default function TodayPanel() {
   const selectedDate = useApp((s) => s.selectedDate);
   const bookings = useApp((s) => s.bookings);
   const me = getUser(useApp((s) => s.currentUserId));
+  const dayNotes = useApp((s) => s.dayNotes);
+  const setDayNote = useApp((s) => s.setDayNote);
   const dayBookings = bookingsOnDate(bookings, selectedDate);
+
+  const note = dayNotes[selectedDate];
+  const isAdmin = config.accessRights[me.accessRights].canManageAnyBooking;
+  const [editing, setEditing] = useState(false);
+  const [draft, setDraft] = useState("");
+  // Close the editor when the day changes.
+  useEffect(() => setEditing(false), [selectedDate]);
 
   const desks = dayBookings.filter((b) => b.spaceType === "desk");
   const total = desks.length;
@@ -62,13 +71,81 @@ export default function TodayPanel() {
     <div className="mx-auto max-w-4xl">
       <h1 className="text-xl font-semibold">What's busy · {selectedDate}</h1>
 
-      {/* Headline + why */}
+      {/* Headline + why (admins can pin a custom note) */}
       <div className="mt-4 rounded-xl border border-indigo-200 bg-indigo-50 p-4">
-        <div className="text-xs font-medium uppercase tracking-wide text-indigo-500">
-          The day at a glance
+        <div className="flex items-center justify-between">
+          <div className="text-xs font-medium uppercase tracking-wide text-indigo-500">
+            The day at a glance
+          </div>
+          {isAdmin && !editing && (
+            <button
+              onClick={() => {
+                setDraft(note ?? "");
+                setEditing(true);
+              }}
+              className="text-xs font-medium text-indigo-600 hover:text-indigo-800"
+            >
+              {note ? "✎ Edit" : "✎ Add note"}
+            </button>
+          )}
         </div>
-        <div className="mt-1 text-lg font-semibold text-indigo-900">{headline}</div>
-        <div className="mt-0.5 text-sm text-indigo-700">{why}</div>
+
+        {editing ? (
+          <div className="mt-2">
+            <input
+              value={draft}
+              autoFocus
+              onChange={(e) => setDraft(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  setDayNote(selectedDate, draft);
+                  setEditing(false);
+                }
+                if (e.key === "Escape") setEditing(false);
+              }}
+              placeholder="e.g. Business Tax Account team day"
+              className="w-full rounded-lg border border-indigo-200 bg-white px-3 py-2 text-sm"
+            />
+            <div className="mt-2 flex items-center gap-2">
+              <button
+                onClick={() => {
+                  setDayNote(selectedDate, draft);
+                  setEditing(false);
+                }}
+                className="rounded-lg bg-indigo-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-indigo-700"
+              >
+                Save
+              </button>
+              <button
+                onClick={() => setEditing(false)}
+                className="rounded-lg px-3 py-1.5 text-xs font-medium text-slate-500 hover:bg-white"
+              >
+                Cancel
+              </button>
+              {note && (
+                <button
+                  onClick={() => {
+                    setDayNote(selectedDate, "");
+                    setEditing(false);
+                  }}
+                  className="ml-auto rounded-lg px-3 py-1.5 text-xs font-medium text-rose-600 hover:bg-white"
+                >
+                  Remove
+                </button>
+              )}
+            </div>
+          </div>
+        ) : (
+          <>
+            <div className="mt-1 flex items-center gap-2 text-lg font-semibold text-indigo-900">
+              {note && <span title="Pinned by an admin">📌</span>}
+              {note || headline}
+            </div>
+            <div className="mt-0.5 text-sm text-indigo-700">
+              {note ? `System read: ${headline.toLowerCase()} · ${why}` : why}
+            </div>
+          </>
+        )}
       </div>
 
       {/* Your team + ghost bookings — the two things people actually want to know */}
