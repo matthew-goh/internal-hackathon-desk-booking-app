@@ -2,12 +2,14 @@ import { useState } from "react";
 import { useApp, getUser, floorsVisibleTo, bookingsOnDate } from "../../store";
 import SpaceMap from "../SpaceMap";
 import BookingPanel from "../BookingPanel";
+import DayRoster from "../DayRoster";
 import { STATUS_STYLE, ORDERED_STATES, bookingsBySpace } from "../../lib/status";
 
 /**
- * Phase 1: interactive SVG floor map. Floor tabs switch between the Main Floor
- * and the (role-gated) Apartment; the map colours every space by its status for
- * the selected date and reveals the occupant on hover.
+ * Phases 1–3: interactive SVG floor map with a who's-in roster. Floor tabs
+ * switch between the Main Floor and the (role-gated) Apartment; the map colours
+ * every space by status for the selected date, reveals the occupant on hover,
+ * and opens a booking drawer on click. The roster lists everyone in that day.
  */
 export default function FloorPanel() {
   const currentUserId = useApp((s) => s.currentUserId);
@@ -31,7 +33,7 @@ export default function FloorPanel() {
   const bookedDesks = desks.filter((d) => bySpace[d.id]).length;
 
   return (
-    <div className="mx-auto max-w-6xl">
+    <div className="mx-auto max-w-7xl">
       {/* Floor tabs — the Apartment only appears for csuite/admin */}
       <div className="mb-4 flex items-center justify-between">
         <div className="flex gap-1.5">
@@ -61,28 +63,39 @@ export default function FloorPanel() {
         )}
       </div>
 
-      <SpaceMap
-        floor={floor}
-        dayBookings={dayBookings}
-        selectedId={selectedId}
-        onSelect={(s) => setSelectedId(s.id)}
-      />
+      <div className="flex items-start gap-4">
+        <div className="min-w-0 flex-1">
+          <SpaceMap
+            floor={floor}
+            dayBookings={dayBookings}
+            selectedId={selectedId}
+            onSelect={(s) => setSelectedId(s.id)}
+          />
 
-      {/* Legend */}
-      <div className="mt-3 flex flex-wrap items-center gap-4 text-xs text-slate-500">
-        {ORDERED_STATES.map((state) => (
-          <div key={state} className="flex items-center gap-1.5">
-            <span
-              className="inline-block h-3 w-3 rounded-full border"
-              style={{
-                background: STATUS_STYLE[state].fill,
-                borderColor: STATUS_STYLE[state].stroke,
-              }}
-            />
-            {STATUS_STYLE[state].label}
+          {/* Legend */}
+          <div className="mt-3 flex flex-wrap items-center gap-4 text-xs text-slate-500">
+            {ORDERED_STATES.map((state) => (
+              <div key={state} className="flex items-center gap-1.5">
+                <span
+                  className="inline-block h-3 w-3 rounded-full border"
+                  style={{
+                    background: STATUS_STYLE[state].fill,
+                    borderColor: STATUS_STYLE[state].stroke,
+                  }}
+                />
+                {STATUS_STYLE[state].label}
+              </div>
+            ))}
+            <span className="ml-auto text-slate-400">Hover for details · click to book</span>
           </div>
-        ))}
-        <span className="ml-auto text-slate-400">Hover for details · click to book</span>
+        </div>
+
+        <DayRoster
+          floor={floor}
+          dayBookings={dayBookings}
+          selectedId={selectedId}
+          onSelect={(spaceId) => setSelectedId(spaceId)}
+        />
       </div>
 
       {selectedSpace && (
