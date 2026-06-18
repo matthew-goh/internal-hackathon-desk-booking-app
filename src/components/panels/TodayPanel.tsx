@@ -1,5 +1,10 @@
+import { useState } from "react";
 import { useApp, getUser, bookingsOnDate } from "../../store";
-import { teamsById } from "../../data";
+import { teamsById, office } from "../../data";
+
+const SPACE_LABEL: Record<string, string> = Object.fromEntries(
+  office.floors.flatMap((f) => f.spaces).map((s) => [s.id, s.label]),
+);
 
 /**
  * Phase 3 (Goal 2): "What does busy mean today?" Instead of a headcount, this
@@ -17,7 +22,9 @@ export default function TodayPanel() {
 
   const checkedIn = desks.filter((b) => b.status === "checked-in").length;
   const pending = desks.filter((b) => b.status === "confirmed").length;
-  const noShows = desks.filter((b) => b.status === "no-show").length;
+  const noShowBookings = desks.filter((b) => b.status === "no-show");
+  const noShows = noShowBookings.length;
+  const [showGhosts, setShowGhosts] = useState(false);
 
   // Team breakdown of who's in.
   const byTeam = new Map<string, number>();
@@ -65,7 +72,7 @@ export default function TodayPanel() {
       </div>
 
       {/* Your team + ghost bookings — the two things people actually want to know */}
-      <div className="mt-4 grid gap-3 sm:grid-cols-2">
+      <div className="mt-4 grid items-start gap-3 sm:grid-cols-2">
         <div
           className="rounded-xl border p-4"
           style={{
@@ -102,6 +109,52 @@ export default function TodayPanel() {
                 ? `${pending} confirmed but not yet checked in.`
                 : "Everyone who booked showed up."}
           </div>
+
+          {noShows > 0 && (
+            <>
+              <button
+                onClick={() => setShowGhosts((v) => !v)}
+                className="mt-2 flex items-center gap-1 text-xs font-medium text-rose-600 hover:text-rose-700"
+                aria-expanded={showGhosts}
+              >
+                {showGhosts ? "Hide" : "Show who"}
+                <span className={`transition-transform ${showGhosts ? "rotate-180" : ""}`}>
+                  ▾
+                </span>
+              </button>
+
+              {showGhosts && (
+                <ul className="mt-2 space-y-1.5 border-t border-rose-100 pt-2">
+                  {noShowBookings.map((b) => {
+                    const person = getUser(b.assignedTo);
+                    const t = teamsById[person.team];
+                    return (
+                      <li key={b.id} className="flex items-center gap-2">
+                        <img
+                          src={person.avatar}
+                          alt=""
+                          className="h-7 w-7 rounded-full bg-white"
+                        />
+                        <div className="min-w-0 flex-1">
+                          <div className="truncate text-sm font-medium">{person.name}</div>
+                          <div className="flex items-center gap-1 text-xs text-slate-500">
+                            <span
+                              className="inline-block h-2 w-2 rounded-full"
+                              style={{ background: t?.color }}
+                            />
+                            {t?.name}
+                          </div>
+                        </div>
+                        <span className="shrink-0 font-mono text-xs text-slate-400">
+                          Desk {SPACE_LABEL[b.spaceId] ?? b.spaceId}
+                        </span>
+                      </li>
+                    );
+                  })}
+                </ul>
+              )}
+            </>
+          )}
         </div>
       </div>
 
