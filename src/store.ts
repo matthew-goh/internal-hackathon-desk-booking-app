@@ -2,7 +2,7 @@ import { create } from "zustand";
 import { bookings as seedBookings, office, usersById, config } from "./data";
 import type { Booking, Floor, Space, SpaceType, User } from "./data/types";
 
-export type View = "floor" | "today" | "insights" | "profile";
+export type View = "floor" | "today" | "insights" | "carbon" | "profile";
 
 interface BookInput {
   spaceId: string;

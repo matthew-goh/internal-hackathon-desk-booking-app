@@ -5,8 +5,9 @@ import { config } from "../data";
 
 const NAV: { id: View; label: string; icon: string }[] = [
   { id: "floor", label: "Floor", icon: "🗺️" },
-  { id: "today", label: "Today", icon: "📍" },
+  { id: "today", label: "What's busy", icon: "📍" },
   { id: "insights", label: "Insights", icon: "📊" },
+  { id: "carbon", label: "Carbon", icon: "🌱" },
   { id: "profile", label: "Profile", icon: "🙂" },
 ];
 
