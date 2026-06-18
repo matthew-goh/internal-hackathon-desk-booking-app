@@ -62,6 +62,7 @@ after subscribing to raw state. Do **not** call array-returning helpers inside a
 | 2 · What's "busy" | `panels/TodayPanel.tsx` |
 | 3 · Who booked what | `SpaceMap.tsx` hover cards + `DayRoster.tsx` |
 | 4 · Visual office + avatars | `SpaceMap.tsx`, `data/office.json` |
+| 4 · Streaks & badges | `panels/ProfilePanel.tsx` + `lib/streaks.ts` |
 | Carbon Negative | `panels/CarbonPanel.tsx` + `lib/carbon.ts` |
 | Access tiers / the Apartment | `config.json` + `canBookSpace`/`floorsVisibleTo` |
 
