@@ -1,0 +1,28 @@
+@import "tailwindcss";
+
+:root {
+  /* Team palette — mirrors data/teams.json, handy for shared styles */
+  --team-engineering: #6366f1;
+  --team-product: #ec4899;
+  --team-design: #f59e0b;
+  --team-sales: #10b981;
+  --team-marketing: #8b5cf6;
+  --team-finance: #0ea5e9;
+  --team-people: #ef4444;
+  --team-leadership: #1e293b;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: #f1f5f9;
+  color: #0f172a;
+  font-family:
+    ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica,
+    Arial, sans-serif;
+}

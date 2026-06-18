@@ -1,0 +1,79 @@
+{
+  "floors": [
+    {
+      "id": "main",
+      "name": "Main Floor",
+      "restricted": false,
+      "map": { "width": 1200, "height": 760, "background": "#F8FAFC" },
+      "zones": [
+        { "id": "A", "label": "North Wing",  "team": "engineering", "x": 100,  "y": 195, "width": 320, "height": 185 },
+        { "id": "B", "label": "East Wing",   "team": "product",     "x": 780,  "y": 195, "width": 320, "height": 185 },
+        { "id": "C", "label": "South Wing",  "team": "sales",       "x": 780,  "y": 445, "width": 320, "height": 185 },
+        { "id": "D", "label": "West Wing",   "team": "finance",     "x": 100,  "y": 445, "width": 320, "height": 185 }
+      ],
+      "spaces": [
+        { "id": "D01", "type": "desk", "label": "D01", "zone": "A", "x": 120, "y": 220, "amenities": ["dual-monitor", "charging", "window"] },
+        { "id": "D02", "type": "desk", "label": "D02", "zone": "A", "x": 200, "y": 220, "amenities": ["monitor", "charging"] },
+        { "id": "D03", "type": "desk", "label": "D03", "zone": "A", "x": 280, "y": 220, "amenities": ["monitor", "charging"] },
+        { "id": "D04", "type": "desk", "label": "D04", "zone": "A", "x": 360, "y": 220, "amenities": ["standing-desk", "charging", "window"] },
+        { "id": "D05", "type": "desk", "label": "D05", "zone": "A", "x": 120, "y": 310, "amenities": ["monitor", "charging"] },
+        { "id": "D06", "type": "desk", "label": "D06", "zone": "A", "x": 200, "y": 310, "amenities": ["charging"] },
+        { "id": "D07", "type": "desk", "label": "D07", "zone": "A", "x": 280, "y": 310, "amenities": ["dual-monitor", "charging"] },
+        { "id": "D08", "type": "desk", "label": "D08", "zone": "A", "x": 360, "y": 310, "amenities": ["monitor", "charging", "standing-desk"] },
+
+        { "id": "D09", "type": "desk", "label": "D09", "zone": "B", "x": 800, "y": 220, "amenities": ["dual-monitor", "charging", "window"] },
+        { "id": "D10", "type": "desk", "label": "D10", "zone": "B", "x": 880, "y": 220, "amenities": ["monitor", "charging"] },
+        { "id": "D11", "type": "desk", "label": "D11", "zone": "B", "x": 960, "y": 220, "amenities": ["monitor", "charging"] },
+        { "id": "D12", "type": "desk", "label": "D12", "zone": "B", "x": 1040,"y": 220, "amenities": ["charging", "window"] },
+        { "id": "D13", "type": "desk", "label": "D13", "zone": "B", "x": 800, "y": 310, "amenities": ["monitor", "charging"] },
+        { "id": "D14", "type": "desk", "label": "D14", "zone": "B", "x": 880, "y": 310, "amenities": ["dual-monitor", "charging"] },
+        { "id": "D15", "type": "desk", "label": "D15", "zone": "B", "x": 960, "y": 310, "amenities": ["monitor", "charging"] },
+        { "id": "D16", "type": "desk", "label": "D16", "zone": "B", "x": 1040,"y": 310, "amenities": ["standing-desk", "charging"] },
+
+        { "id": "D17", "type": "desk", "label": "D17", "zone": "C", "x": 800, "y": 470, "amenities": ["monitor", "charging", "window"] },
+        { "id": "D18", "type": "desk", "label": "D18", "zone": "C", "x": 880, "y": 470, "amenities": ["monitor", "charging"] },
+        { "id": "D19", "type": "desk", "label": "D19", "zone": "C", "x": 960, "y": 470, "amenities": ["charging"] },
+        { "id": "D20", "type": "desk", "label": "D20", "zone": "C", "x": 1040,"y": 470, "amenities": ["dual-monitor", "charging", "window"] },
+        { "id": "D21", "type": "desk", "label": "D21", "zone": "C", "x": 800, "y": 560, "amenities": ["monitor", "charging"] },
+        { "id": "D22", "type": "desk", "label": "D22", "zone": "C", "x": 880, "y": 560, "amenities": ["charging"] },
+        { "id": "D23", "type": "desk", "label": "D23", "zone": "C", "x": 960, "y": 560, "amenities": ["monitor", "charging"] },
+        { "id": "D24", "type": "desk", "label": "D24", "zone": "C", "x": 1040,"y": 560, "amenities": ["standing-desk", "charging"] },
+
+        { "id": "D25", "type": "desk", "label": "D25", "zone": "D", "x": 120, "y": 470, "amenities": ["monitor", "charging", "window"] },
+        { "id": "D26", "type": "desk", "label": "D26", "zone": "D", "x": 200, "y": 470, "amenities": ["monitor", "charging"] },
+        { "id": "D27", "type": "desk", "label": "D27", "zone": "D", "x": 280, "y": 470, "amenities": ["charging"] },
+        { "id": "D28", "type": "desk", "label": "D28", "zone": "D", "x": 360, "y": 470, "amenities": ["dual-monitor", "charging"] },
+        { "id": "D29", "type": "desk", "label": "D29", "zone": "D", "x": 120, "y": 560, "amenities": ["monitor", "charging"] },
+        { "id": "D30", "type": "desk", "label": "D30", "zone": "D", "x": 200, "y": 560, "amenities": ["charging"] },
+        { "id": "D31", "type": "desk", "label": "D31", "zone": "D", "x": 280, "y": 560, "amenities": ["monitor", "charging"] },
+        { "id": "D32", "type": "desk", "label": "D32", "zone": "D", "x": 360, "y": 560, "amenities": ["standing-desk", "charging", "window"] },
+
+        { "id": "R-brainstorm", "type": "room", "label": "Brainstorm",  "seats": 6,  "x": 120, "y": 40, "width": 200, "height": 120, "privileged": false, "amenities": ["screen", "whiteboard", "video-conf"] },
+        { "id": "R-boardroom",  "type": "room", "label": "Boardroom",   "seats": 12, "x": 460, "y": 40, "width": 280, "height": 120, "privileged": true,  "allowedRoles": ["manager", "csuite", "admin"], "amenities": ["screen", "whiteboard", "video-conf", "phone"] },
+        { "id": "R-huddle",     "type": "room", "label": "Huddle",      "seats": 4,  "x": 880, "y": 40, "width": 200, "height": 120, "privileged": false, "amenities": ["screen", "whiteboard"] },
+        { "id": "R-focus",      "type": "room", "label": "Focus Room",  "seats": 4,  "x": 610, "y": 195, "width": 130, "height": 110, "privileged": false, "amenities": ["screen", "video-conf"] },
+
+        { "id": "POD1", "type": "pod", "label": "Pod 1", "seats": 1, "x": 500, "y": 340, "width": 70, "height": 70, "privileged": false, "amenities": ["charging", "phone"] },
+        { "id": "POD2", "type": "pod", "label": "Pod 2", "seats": 1, "x": 590, "y": 340, "width": 70, "height": 70, "privileged": false, "amenities": ["charging", "phone"] },
+
+        { "id": "LOUNGE",  "type": "lounge",  "label": "Lounge",  "seats": 10, "x": 460, "y": 440, "width": 280, "height": 190, "bookable": false, "amenities": ["charging"] },
+        { "id": "KITCHEN", "type": "kitchen", "label": "Kitchen", "x": 460, "y": 195, "width": 130, "height": 110, "bookable": false, "amenities": [] }
+      ]
+    },
+    {
+      "id": "flat",
+      "name": "The Flat",
+      "restricted": true,
+      "allowedRoles": ["csuite", "admin"],
+      "map": { "width": 600, "height": 420, "background": "#FBF7F0" },
+      "zones": [],
+      "spaces": [
+        { "id": "F-lounge",    "type": "lounge", "label": "Flat Lounge",   "seats": 6, "x": 40,  "y": 40,  "width": 240, "height": 160, "privileged": true, "allowedRoles": ["csuite", "admin"], "amenities": ["screen", "charging"] },
+        { "id": "F-boardroom", "type": "room",   "label": "Flat Boardroom","seats": 8, "x": 320, "y": 40,  "width": 240, "height": 160, "privileged": true, "allowedRoles": ["csuite", "admin"], "amenities": ["screen", "whiteboard", "video-conf", "phone"] },
+        { "id": "F-D01",       "type": "desk",   "label": "Flat Desk 1",   "x": 60,  "y": 250, "amenities": ["dual-monitor", "charging", "window"], "privileged": true, "allowedRoles": ["csuite", "admin"] },
+        { "id": "F-D02",       "type": "desk",   "label": "Flat Desk 2",   "x": 160, "y": 250, "amenities": ["dual-monitor", "charging", "window"], "privileged": true, "allowedRoles": ["csuite", "admin"] },
+        { "id": "F-kitchen",   "type": "kitchen","label": "Kitchenette",   "x": 320, "y": 240, "width": 240, "height": 130, "bookable": false, "amenities": [] }
+      ]
+    }
+  ]
+}

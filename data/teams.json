@@ -1,0 +1,10 @@
+[
+  { "id": "engineering", "name": "Engineering", "color": "#6366F1", "homeZone": "A" },
+  { "id": "product",     "name": "Product",     "color": "#EC4899", "homeZone": "B" },
+  { "id": "design",      "name": "Design",      "color": "#F59E0B", "homeZone": "B" },
+  { "id": "sales",       "name": "Sales",       "color": "#10B981", "homeZone": "C" },
+  { "id": "marketing",   "name": "Marketing",   "color": "#8B5CF6", "homeZone": "C" },
+  { "id": "finance",     "name": "Finance",     "color": "#0EA5E9", "homeZone": "D" },
+  { "id": "people",      "name": "People & HR", "color": "#EF4444", "homeZone": "D" },
+  { "id": "leadership",  "name": "Leadership",  "color": "#1E293B", "homeZone": "flat" }
+]

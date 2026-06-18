@@ -1,0 +1,19 @@
+{
+  "company": "Mercator",
+  "today": "2026-06-18",
+  "workingHours": { "start": "08:00", "end": "18:00" },
+  "accessRights": {
+    "user":    { "label": "User",    "rank": 1, "canBookForOthers": false, "canAccessFlat": false, "canManageAnyBooking": false },
+    "manager": { "label": "Manager", "rank": 2, "canBookForOthers": true,  "canAccessFlat": false, "canManageAnyBooking": false },
+    "csuite":  { "label": "C-Suite", "rank": 3, "canBookForOthers": true,  "canAccessFlat": true,  "canManageAnyBooking": false },
+    "admin":   { "label": "Admin",   "rank": 4, "canBookForOthers": true,  "canAccessFlat": true,  "canManageAnyBooking": true }
+  },
+  "_comment_coOwnership": "Co-ownership is peer-to-peer and independent of role. ANY user can assign a desk they booked to another person; both then appear in the booking's owners[] and can modify/cancel/check-in. accessRights only gates booking-on-behalf at scale, flat access, and admin override.",
+  "carbon": {
+    "_comment": "kg CO2e per km, one-way. Round trips are 2x. A booked+attended office day implies a commute; a day NOT booked implies remote (zero commute emissions). Saving = avoided commute emissions on remote days.",
+    "factorsKgPerKm": { "car": 0.171, "bus": 0.102, "train": 0.041, "tube": 0.028, "bike": 0.0, "walk": 0.0 },
+    "officeDayBaselineKg": 2.4,
+    "_comment_baseline": "Per-head fixed office overhead (heating, lighting, kitchen) attributed to an attended day; used for office-level planning, not per-user commute savings.",
+    "treesPerTonne": 50
+  }
+}
